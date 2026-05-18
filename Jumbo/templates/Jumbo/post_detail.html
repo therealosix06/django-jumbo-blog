@@ -1,0 +1,104 @@
+{% extends "Jumbo/base.html" %}
+
+{% block content %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}" alt="Post author image">
+
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{% url 'user-posts' object.author.username %}">
+                    {{ object.author }}
+                </a>
+
+                <small class="text-muted">{{ object.date_posted }}</small>
+
+                {% if object.author == user %}
+                    <div>
+                        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">
+                            Update
+                        </a>
+
+                        <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">
+                            Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <h2 class="article-title">{{ object.title }}</h2>
+            <p class="article-content">{{ object.content }}</p>
+        </div>
+    </article>
+
+    <hr>
+
+    <h3>Comments</h3>
+
+    {% for comment in comments %}
+        <div class="content-section">
+            <small class="text-muted">
+                {{ comment.author }} • {{ comment.date_posted }}
+            </small>
+
+            <p>{{ comment.content }}</p>
+
+            {% for reply in comment.replies.all %}
+                <div class="content-section ml-4">
+                    <small class="text-muted">
+                        {{ reply.author }} • {{ reply.date_posted }}
+                    </small>
+
+                    <p>{{ reply.content }}</p>
+                </div>
+            {% endfor %}
+
+            {% if user.is_authenticated %}
+                <form method="POST" class="mt-2 ml-4">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+
+                    <div class="form-group">
+                        <textarea
+                            name="content"
+                            class="form-control"
+                            rows="2"
+                            placeholder="Write a reply..."
+                        ></textarea>
+                    </div>
+
+                    <button class="btn btn-sm btn-outline-info" type="submit">
+                        Reply
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+    {% if user.is_authenticated %}
+        <div class="content-section">
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <textarea
+                        name="content"
+                        class="form-control"
+                        rows="3"
+                        placeholder="Write a comment..."
+                    ></textarea>
+                </div>
+
+                <button class="btn btn-outline-info" type="submit">
+                    Comment
+                </button>
+            </form>
+        </div>
+    {% else %}
+        <p>
+            <a href="{% url 'login' %}">Login</a> to comment.
+        </p>
+    {% endif %}
+{% endblock content %}
