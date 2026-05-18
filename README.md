@@ -30,22 +30,16 @@ A Django blog/social platform with user authentication, profiles, CRUD posts, pa
 
 
 
-\## Tech Stack
+## Tech Stack
 
-
-
-\- Python
-
-\- Django
-
-\- SQLite
-
-\- Bootstrap
-
-\- Pillow
-
-\- Django Crispy Forms
-
+- Python
+- Django
+- SQLite
+- HTML
+- CSS
+- Bootstrap
+- Pillow
+- Django Crispy Forms
 
 
 \## Current Status
